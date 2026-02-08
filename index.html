@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Anime Deploy</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial}
+body{
+margin:0;
+background:linear-gradient(#02101d,#042c44);
+height:100vh;
+overflow:hidden;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.wave{
+position:absolute;
+bottom:0;width:200%;height:200px;
+background:rgba(0,255,255,.15);
+border-radius:100%;
+animation:wave 12s linear infinite;
+}
+.wave2{animation-delay:-6s;opacity:.4}
+@keyframes wave{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.particle{
+position:absolute;border-radius:50%;
+background:#00ffff;opacity:.6;
+animation:float linear infinite;
+}
+@keyframes float{0%{transform:translateY(100vh)}100%{transform:translateY(-120px)}}
+
+.card{
+width:460px;min-height:720px;padding:26px;
+background:rgba(0,40,80,.85);
+border-radius:22px;
+border:2px solid rgba(0,255,255,.45);
+box-shadow:0 0 50px rgba(0,255,255,.7);
+position:relative;z-index:3;
+}
+
+video{
+width:100%;height:180px;object-fit:cover;
+border-radius:14px;margin-bottom:10px;
+}
+
+.box{
+width:100%;margin-top:10px;padding:10px;
+background:rgba(0,0,0,.25);
+border-radius:12px;
+border:1px solid rgba(0,255,255,.3);
+color:white;font-size:12px;
+}
+
+button{
+width:100%;background:#00cfff;border:none;
+padding:14px;border-radius:10px;margin-top:15px;font-weight:bold;
+}
+
+.success{margin-top:10px;color:#7fdfff;font-size:12px;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<video autoplay muted loop playsinline>
+<source src="VIDEO_LINK_DI_SINI.mp4" type="video/mp4">
+</video>
+
+<h2>⚓ Neon Anime Deploy</h2>
+
+<input class="box" id="name" placeholder="Nama Website">
+
+<input type="file" id="file" class="box">
+
+<button onclick="deploy()">🚀 DEPLOY SEKARANG</button>
+
+<div class="success" id="ok"></div>
+
+</div>
+
+<div class="wave"></div>
+<div class="wave wave2"></div>
+
+<script>
+const ok=document.getElementById("ok");
+
+async function deploy(){
+
+const name=document.getElementById("name").value;
+const file=document.getElementById("file").files[0];
+
+if(!name || !file){
+alert("Isi nama & pilih HTML dulu");
+return;
+}
+
+ok.innerHTML="⏳ Deploying...";
+
+const html = await file.text();
+
+const r = await fetch("/api/deploy",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({name,html})
+});
+
+const j = await r.json();
+
+ok.innerHTML=`✅ Sukses<br><a target="_blank" style="color:#0ff" href="${j.url}">${j.url}</a>`;
+}
+
+for(let i=0;i<25;i++){
+let p=document.createElement("div");
+p.className="particle";
+p.style.left=Math.random()*100+"%";
+p.style.width=p.style.height=3+Math.random()*6+"px";
+p.style.animationDuration=5+Math.random()*10+"s";
+document.body.appendChild(p);
+}
+</script>
+
+</body>
+</html>
